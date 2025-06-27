@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Valorant Swiftplay Challenge Seçici</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron&family=Montserrat:wght@400;700&display=swap');
+
+  /* Genel Body */
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a162c 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    color: #f0f0f5;
+    overflow: hidden;
+  }
+
+  /* Ana Kutu */
+  .container {
+    background: rgba(18, 18, 34, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 0 40px var(--main-color, #ff4655aa);
+    max-width: 600px;
+    padding: 30px 40px;
+    text-align: center;
+    position: relative;
+  }
+
+  /* Başlık */
+  h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 2.8rem;
+    margin-bottom: 15px;
+    color: var(--main-color, #ff4655);
+    text-shadow: 0 0 12px var(--main-color, #ff4655cc);
+  }
+
+  /* Açıklama */
+  #challengeText {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    min-height: 130px;
+    padding: 20px;
+    border: 2px solid var(--main-color, #ff4655);
+    border-radius: 12px;
+    background: rgba(255, 70, 85, 0.05);
+    box-shadow: inset 0 0 10px var(--main-color, #ff465588);
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+  }
+
+  /* Buton */
+  button {
+    background: var(--main-color, #ff4655);
+    border: none;
+    padding: 16px 40px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    border-radius: 40px;
+    cursor: pointer;
+    box-shadow: 0 0 25px var(--main-color, #ff4655cc);
+    transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  button:hover {
+    background-color: var(--hover-color, #ff1e33);
+    box-shadow: 0 0 35px var(--hover-color, #ff1e33cc);
+  }
+
+  /* Alt bilgi */
+  footer {
+    margin-top: 25px;
+    font-size: 0.85rem;
+    color: #aaaabb;
+    font-style: italic;
+  }
+
+  /* Animasyon - Başlangıç efekti */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  #challengeText.show {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  /* Dropdown Stil */
+  select {
+    margin-bottom: 30px;
+    padding: 10px 15px;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    border: 2px solid var(--main-color, #ff4655);
+    background: rgba(255, 70, 85, 0.1);
+    color: #fff;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+  }
+  select:hover, select:focus {
+    border-color: var(--hover-color, #ff1e33);
+    outline: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .container {
+      max-width: 90vw;
+      padding: 25px 20px;
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    #challengeText {
+      font-size: 1rem;
+      min-height: 100px;
+      padding: 15px;
+    }
+    button {
+      padding: 14px 30px;
+      font-size: 1rem;
+    }
+    select {
+      font-size: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="container">
+  <h1>Valorant Swiftplay Challenge</h1>
+  <select id="colorSelector" aria-label="Renk Seçici">
+    <option value="#ff4655,#ff1e33">Kırmızı</option>
+    <option value="#46b3ff,#1e9eff">Mavi</option>
+    <option value="#2ecc71,#27ae60">Yeşil</option>
+    <option value="#f39c12,#d68910">Turuncu</option>
+    <option value="#9b59b6,#8e44ad">Mor</option>
+  </select>
+
+  <div id="challengeText">Butona bas ve farklı bir challenge al!</div>
+  <button id="newChallengeBtn">Yeni Challenge Seç</button>
+  <footer>Her seferinde farklı zorluk, farklı eğlence!</footer>
+</div>
+
+<script>
+  const challenges = [
+    {
+      title: "Sadece Knife Kullan Challenge",
+      desc: "Oyun boyunca sadece bıçak kullanabilirsin, nişancı ve tabanca yasak. En az 3 kill al!"
+    },
+    {
+      title: "Ajanı Kısıtla Challenge",
+      desc: "Belirlenen ajanla oyna (örneğin Reyna veya Sage). Yeteneklerini sadece savunma amaçlı kullanabilirsin. 5 asist veya 3 kill zorunlu."
+    },
+    {
+      title: "Gizli Görev Challenge",
+      desc: "Kendine mini bir görev seç (örneğin sadece ultinle kill almak). Görevini söyleme, sonunda tamamla!"
+    },
+    {
+      title: "Yavaş Adam Challenge",
+      desc: "Sadece sessiz yürü ve yavaş hareket et. Koşmak ve zıplamak yasak. En az 4 kill hedefi var."
+    },
+    {
+      title: "Tek Tur Silahı Challenge",
+      desc: "Bir tur sadece belirlenen silahı kullan (Ghost, Bulldog vs.). 3 kill veya üstü almalısın."
+    },
+    {
+      title: "Yetenek Absent Challenge",
+      desc: "Yetenek kullanmak yok, sadece silahla oyna. 10 kill veya 2 tur kazanmayı hedefle."
+    },
+    {
+      title: "Sadece Headshot Challenge",
+      desc: "Sadece kafa vuruşları ile kill alabilirsin. Vücut vuruşları sayılmaz."
+    },
+    {
+      title: "Sadece Sağ Elini Kullan Challenge",
+      desc: "Sadece mouse’un sağ tuşunu kullanarak nişan al ve ateş et."
+    },
+    {
+      title: "Sesli Komut Challenge",
+      desc: "Sadece sesli komutlarla takımını yönet. Chat ve yazılı iletişim yasak."
+    },
+    {
+      title: "No Kill Support Challenge",
+      desc: "Kill almayacaksın, sadece destek ol. Takım en az 2 tur kazanmalı."
+    },
+    {
+      title: "Sadece Pistole Challenge",
+      desc: "Tüm oyunda sadece tabanca kullanabilirsin. En az 5 kill almak zorundasın."
+    },
+    {
+      title: "Hiç Reload Yapma Challenge",
+      desc: "Oyun boyunca asla reload yapma. Mermilerin bittiğinde silahtan vazgeç!"
+    },
+    {
+      title: "Crosshair Kapalı Challenge",
+      desc: "Nişangahı tamamen kapat ve sadece nişan alma becerinle oyna."
+    },
+    {
+      title: "Her Tur Farklı Silah Challenge",
+      desc: "Her tur farklı bir silah kullan, aynı silahı iki tur üst üste kullanamazsın."
+    }
+  ];
+
+  const challengeTextEl = document.getElementById('challengeText');
+  const btn = document.getElementById('newChallengeBtn');
+  const colorSelector = document.getElementById('colorSelector');
+  const container = document.getElementById('container');
+
+  function pickChallenge() {
+    const randomIndex = Math.floor(Math.random() * challenges.length);
+    const challenge = challenges[randomIndex];
+    challengeTextEl.classList.remove('show');
+    void challengeTextEl.offsetWidth; // trigger reflow
+    challengeTextEl.innerHTML = `<strong style="color: var(--main-color); font-size:1.4rem;">${challenge.title}</strong><br>${challenge.desc}`;
+    challengeTextEl.classList.add('show');
+  }
+
+  function updateColors() {
+    // Seçilen değeri al (#main,#hover)
+    const value = colorSelector.value.split(',');
+    const mainColor = value[0];
+    const hoverColor = value[1];
+    // CSS değişkenlerini güncelle
+    container.style.setProperty('--main-color', mainColor);
+    container.style.setProperty('--hover-color', hoverColor);
+  }
+
+  btn.addEventListener('click', pickChallenge);
+  colorSelector.addEventListener('change', updateColors);
+
+  // Sayfa açılırken default renk ayarla
+  updateColors();
+</script>
+
+</body>
+</html>

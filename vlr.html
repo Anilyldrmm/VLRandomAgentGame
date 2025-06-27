@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valorant Silah Seçici</title>
+    <link rel="icon" href="https://res.cloudinary.com/dfacrnvui/image/upload/c_scale,w_32,h_32/v1739654903/Base_Profile_Screenshot_2025.02.16_-_00.27.49.72_nnd8ne.png" type="image/png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f1419, #1e2328, #0a0e13);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #ff4654, #ff6b7a, #ff4654);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 70, 84, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 70, 84, 0.5); }
+            to { text-shadow: 0 0 40px rgba(255, 70, 84, 0.8); }
+        }
+
+        .weapons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .weapon-card {
+            background: linear-gradient(145deg, #1e2328, #2a3038);
+            border: 2px solid #3c4147;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .weapon-card:hover {
+            transform: translateY(-8px);
+            border-color: #ff4654;
+            box-shadow: 0 15px 35px rgba(255, 70, 84, 0.4);
+        }
+
+        .weapon-card:hover .weapon-icon {
+            transform: scale(1.1);
+        }
+
+        .weapon-card:hover .weapon-name {
+            color: #00d4aa;
+        }
+
+        .weapon-card.eliminated {
+            animation: glitchOut 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .weapon-card.winner {
+            animation: victoryPulse 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            border-color: #00d4aa;
+            box-shadow: 0 0 40px rgba(0, 212, 170, 0.6);
+            transform: scale(1.2);
+            z-index: 10;
+        }
+
+        .weapon-card.targeting {
+            animation: targetLock 0.5s ease-in-out;
+            border-color: #ff4654;
+            box-shadow: 0 0 25px rgba(255, 70, 84, 0.5);
+        }
+
+        .weapon-card.scanning {
+            animation: scanLine 1.5s linear infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weapon-card.scanning::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 170, 0.4), transparent);
+            animation: scan 1.5s linear infinite;
+        }
+
+        .weapon-card.instant-win {
+            animation: instantWin 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            z-index: 100;
+        }
+
+        @keyframes instantWin {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(255, 70, 84, 0);
+            }
+            20% {
+                transform: scale(1.5);
+                box-shadow: 0 0 100px rgba(255, 70, 84, 0.8);
+                filter: brightness(2);
+            }
+            40% {
+                transform: scale(0.8);
+                box-shadow: 0 0 150px rgba(255, 70, 84, 1);
+                filter: brightness(3);
+            }
+            60% {
+                transform: scale(1.5);
+                box-shadow: 0 0 200px rgba(255, 70, 84, 1);
+                filter: brightness(2.5);
+            }
+            80% {
+                transform: scale(1.2);
+                box-shadow: 0 0 150px rgba(255, 70, 84, 0.8);
+                filter: brightness(2);
+            }
+            100% {
+                transform: scale(1.3);
+                box-shadow: 0 0 100px rgba(255, 70, 84, 0.6);
+                filter: brightness(1.5);
+                border-color: #ff4654;
+            }
+        }
+
+        @keyframes glitchOut {
+            0% { 
+                opacity: 1; 
+                transform: scale(1) translateX(0);
+                filter: hue-rotate(0deg) contrast(1);
+            }
+            15% { 
+                opacity: 0.8; 
+                transform: scale(1.05) translateX(-3px);
+                filter: hue-rotate(90deg) contrast(1.5);
+            }
+            30% { 
+                opacity: 0.6; 
+                transform: scale(0.95) translateX(5px);
+                filter: hue-rotate(180deg) contrast(2);
+            }
+            45% { 
+                opacity: 0.4; 
+                transform: scale(1.1) translateX(-8px) rotateZ(5deg);
+                filter: hue-rotate(270deg) contrast(3) blur(1px);
+            }
+            70% { 
+                opacity: 0.2; 
+                transform: scale(0.7) translateX(10px) rotateZ(-10deg);
+                filter: hue-rotate(360deg) contrast(0.5) blur(3px);
+            }
+            100% { 
+                opacity: 0; 
+                transform: scale(0) translateX(0) rotateZ(0deg);
+                filter: hue-rotate(0deg) contrast(0) blur(5px);
+            }
+        }
+
+        @keyframes targetLock {
+            0%, 100% { 
+                transform: scale(1);
+                border-color: #3c4147;
+            }
+            25% { 
+                transform: scale(1.02);
+                border-color: #ff4654;
+            }
+            50% { 
+                transform: scale(1.05);
+                border-color: #ff6b7a;
+            }
+            75% { 
+                transform: scale(1.02);
+                border-color: #ff4654;
+            }
+        }
+
+        @keyframes victoryPulse {
+            0% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 rgba(0, 212, 170, 0.6);
+            }
+            25% { 
+                transform: scale(1.25);
+                box-shadow: 0 0 80px rgba(0, 212, 170, 1);
+                border-color: #00ffc3;
+            }
+            50% { 
+                transform: scale(1.15);
+                box-shadow: 0 0 60px rgba(0, 212, 170, 0.8);
+                border-color: #00d4aa;
+            }
+            75% { 
+                transform: scale(1.25);
+                box-shadow: 0 0 80px rgba(0, 212, 170, 1);
+                border-color: #00ffc3;
+            }
+            100% { 
+                transform: scale(1.2);
+                box-shadow: 0 0 60px rgba(0, 212, 170, 0.8);
+                border-color: #00d4aa;
+            }
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes scanLine {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Konfeti Animasyonları */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ff4654;
+            top: -10px;
+            z-index: 1000;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        .confetti:nth-child(odd) { background: #00d4aa; }
+        .confetti:nth-child(3n) { background: #8400ff; }
+        .confetti:nth-child(4n) { background: #ff6b7a; }
+        .confetti:nth-child(5n) { background: #00ffc3; }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotateZ(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotateZ(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Geliştirilmiş UI Elementleri */
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #888;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .stats-panel {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: linear-gradient(145deg, #1e2328, #2a3038);
+            border: 1px solid #3c4147;
+            border-radius: 10px;
+            padding: 15px 20px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d4aa;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .weapon-icon {
+            width: 100px;
+            height: 60px;
+            background: rgba(60, 65, 71, 0.3);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .weapon-icon img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .weapon-name {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #e8e8e8;
+        }
+
+        .weapon-type {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff4654, #ff6b7a);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #ff6b7a, #ff4654);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 70, 84, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            text-align: center;
+            margin-top: 20px;
+            padding: 30px;
+            background: linear-gradient(145deg, #1e2328, #2a3038);
+            border-radius: 20px;
+            border: 3px solid #00d4aa;
+            box-shadow: 0 0 50px rgba(0, 212, 170, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00d4aa, #8400ff, #ff4654, #00d4aa);
+            border-radius: 20px;
+            z-index: -1;
+            animation: borderGlow 2s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result h2 {
+            color: #00d4aa;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 212, 170, 0.5);
+        }
+
+        .result p {
+            font-size: 1.8rem;
+            color: #e8e8e8;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #3c4147;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8400ff, #00d4aa);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .weapons-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 10px;
+            }
+            
+            .weapon-card {
+                min-height: 100px;
+                padding: 10px;
+            }
+            
+            .weapon-icon {
+                width: 60px;
+                height: 40px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <audio id="luckyAudio" src="https://res.cloudinary.com/dfacrnvui/video/upload/v1750357400/Kad%C4%B1k%C3%B6y_Bo%C4%9Fas%C4%B1_Hay%C4%B1r_Alt%C4%B1ma_S%C4%B1%C3%A7t%C4%B1m_kad%C4%B1k%C3%B6ybo%C4%9Fas%C4%B1_testotaylan_fenerbah%C3%A7e_fenerbahce_1_lfbrfs.mp3"></audio>
+    <div class="container">
+    <div class="container">
+        <div class="header-section">
+            <h1 class="title">VALORANT SİLAH SEÇİCİ</h1>
+            <p class="subtitle">Rastgele silah seçimi için gelişmiş tarama sistemi</p>
+        </div>
+        
+        <div class="stats-panel">
+            <div class="stat-item">
+                <div class="stat-value" id="totalWeapons">18</div>
+                <div class="stat-label">Toplam Silah</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="remainingCount">18</div>
+                <div class="stat-label">Kalan</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="eliminatedCount">0</div>
+                <div class="stat-label">Elenen</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-primary" onclick="startPicker()">TARAMA BAŞLAT</button>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="weapons-grid" id="weaponsGrid"></div>
+
+        <div class="result" id="result" style="display: none;">
+            <h2>🏆 KAZANAN SİLAH 🏆</h2>
+            <p id="selectedWeapon"></p>
+        </div>
+    </div>
+
+    <script>
+        const weapons = [
+            // Sidearms
+            { name: 'Classic', type: 'Sidearm', image: 'guns/Classic.png' },
+            { name: 'Shorty', type: 'Sidearm', image: 'guns/Shorty.png' },
+            { name: 'Frenzy', type: 'Sidearm', image: 'guns/Frenzy.png' },
+            { name: 'Ghost', type: 'Sidearm', image: 'guns/Ghost.png' },
+            { name: 'Sheriff', type: 'Sidearm', image: 'guns/Sheriff.png' },
+            
+            // SMGs
+            { name: 'Stinger', type: 'SMG', image: 'guns/Stinger.png' },
+            { name: 'Spectre', type: 'SMG', image: 'guns/Spectre.png' },
+            
+            // Shotguns
+            { name: 'Bucky', type: 'Shotgun', image: 'guns/Bucky.png' },
+            { name: 'Judge', type: 'Shotgun', image: 'guns/Judge.png' },
+            
+            // Rifles
+            { name: 'Bulldog', type: 'Rifle', image: 'guns/Bulldog.png' },
+            { name: 'Guardian', type: 'Rifle', image: 'guns/Guardian.png' },
+            { name: 'Phantom', type: 'Rifle', image: 'guns/Phantom.png' },
+            { name: 'Vandal', type: 'Rifle', image: 'guns/Vandal.png' },
+            
+            // Sniper Rifles
+            { name: 'Marshal', type: 'Sniper', image: 'guns/Marshal.png' },
+            { name: 'Outlaw', type: 'Sniper', image: 'guns/Outlaw.png' },
+            { name: 'Operator', type: 'Sniper', image: 'guns/Operator.png' },
+            
+            // Machine Gun
+            { name: 'Ares', type: 'Machine Gun', image: 'guns/Ares.png' },
+            { name: 'Odin', type: 'Machine Gun', image: 'guns/Odin.png' }
+        ];
+
+        let isAnimating = false;
+        let remainingWeapons = [...weapons];
+        let eliminatedWeapons = [];
+        let luckyTriggered = false;
+
+        function playLuckySound() {
+            const audio = document.getElementById('luckyAudio');
+            audio.currentTime = 0;
+            audio.volume = 0.35;
+            audio.play();
+        }
+
+        function stopLuckySound() {
+            const audio = document.getElementById('luckyAudio');
+            audio.pause();
+            audio.currentTime = 0;
+        }
+
+
+        function createWeaponCard(weapon, index) {
+            return `
+                <div class="weapon-card" data-weapon-name="${weapon.name}" data-index="${index}">
+                    <div class="weapon-icon">
+                        <img src="${weapon.image}" alt="${weapon.name}" onerror="this.style.display='none';">
+                    </div>
+                    <div class="weapon-name">${weapon.name}</div>
+                    <div class="weapon-type">${weapon.type}</div>
+                </div>
+            `;
+        }
+
+        function renderWeapons() {
+            const grid = document.getElementById('weaponsGrid');
+            grid.innerHTML = weapons.map((weapon, index) => 
+                createWeaponCard(weapon, index)
+            ).join('');
+            
+            // Eliminated olan kartları gizle
+            eliminatedWeapons.forEach(weaponName => {
+                const card = document.querySelector(`[data-weapon-name="${weaponName}"]`);
+                if (card) {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function updateProgress() {
+            const progress = (eliminatedWeapons.length / weapons.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Update stats
+            document.getElementById('remainingCount').textContent = remainingWeapons.length;
+            document.getElementById('eliminatedCount').textContent = eliminatedWeapons.length;
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 5000);
+                }, i * 100);
+            }
+        }
+
+        function eliminateWeapon(weaponName) {
+            const card = document.querySelector(`[data-weapon-name="${weaponName}"]`);
+            if (card && !card.classList.contains('eliminated')) {
+                // Target lock effect first
+                card.classList.add('targeting');
+                setTimeout(() => {
+                    card.classList.remove('targeting');
+                    card.classList.add('eliminated');
+                    
+                    // Silahı eliminated listesine ekle
+                    eliminatedWeapons.push(weaponName);
+                    
+                    // remainingWeapons listesinden çıkar
+                    const weaponIndex = remainingWeapons.findIndex(w => w.name === weaponName);
+                    if (weaponIndex > -1) {
+                        remainingWeapons.splice(weaponIndex, 1);
+                    }
+                    
+                    updateProgress();
+                    
+                    // Animasyon bitince kartı gizle
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 500);
+                }, 300);
+            }
+        }
+
+        function showWinner(weapon) {
+            // Konfeti patlatma
+            createConfetti();
+            
+            setTimeout(() => {
+                const winnerCard = document.querySelector(`[data-weapon-name="${weapon.name}"]`);
+                if (winnerCard) {
+                    winnerCard.classList.add('winner');
+                }
+                
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('selectedWeapon').innerHTML = `
+                    <span style="font-size: 2.2rem; color: #8400ff; font-weight: bold; text-shadow: 0 0 20px rgba(132, 0, 255, 0.5);">${weapon.name}</span><br>
+                    <span style="font-size: 1.2rem; color: #00d4aa; margin-top: 10px; display: inline-block;">${weapon.type}</span>
+                `;
+            }, 800);
+        }
+
+        function instantWin(weapon) {
+            // Tüm silahları tek seferde ele
+            const allCards = document.querySelectorAll('.weapon-card');
+            allCards.forEach(card => {
+                if (card.dataset.weaponName !== weapon.name) {
+                    card.classList.add('eliminated');
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 500);
+                }
+            });
+
+            // Kazananı göster
+            const winnerCard = document.querySelector(`[data-weapon-name="${weapon.name}"]`);
+            if (winnerCard) {
+                winnerCard.classList.add('instant-win');
+            }
+
+            // Listeleri güncelle
+            eliminatedWeapons = weapons.filter(w => w.name !== weapon.name).map(w => w.name);
+            remainingWeapons = [weapon];
+            updateProgress();
+
+            // Sonucu göster
+            setTimeout(() => {
+                showWinner(weapon);
+            }, 1000);
+        }
+
+        async function startPicker() {
+            if (isAnimating) return;
+
+            resetPicker();
+            stopLuckySound();
+            isAnimating = true;
+            luckyTriggered = false;
+            document.getElementById('result').style.display = 'none';
+
+            const startButton = document.querySelector('.btn-primary');
+            startButton.disabled = true;
+            startButton.textContent = 'TARAMA BAŞLADI...';
+
+            const shouldInstantWin = Math.random() < 0.03;
+            if (shouldInstantWin) {
+                const instantWinner = weapons[Math.floor(Math.random() * weapons.length)];
+                instantWin(instantWinner);
+                playLuckySound();
+                startButton.disabled = false;
+                startButton.textContent = 'YENİDEN TARA';
+                isAnimating = false;
+                return;
+            }
+
+            const visibleCards = document.querySelectorAll('.weapon-card:not([style*="display: none"])');
+            visibleCards.forEach(card => card.classList.add('scanning'));
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            visibleCards.forEach(card => card.classList.remove('scanning'));
+
+            while (remainingWeapons.length > 1) {
+                await new Promise(resolve => setTimeout(resolve, 600));
+
+                const randomIndex = Math.floor(Math.random() * remainingWeapons.length);
+
+                if (!luckyTriggered && Math.random() < 0.05) {
+                    const luckyWeapon = remainingWeapons[randomIndex];
+                    instantWin(luckyWeapon);
+                    playLuckySound();
+                    luckyTriggered = true;
+                    startButton.disabled = false;
+                    startButton.textContent = 'YENİDEN TARA';
+                    isAnimating = false;
+                    return;
+                }
+
+                const weaponToEliminate = remainingWeapons[randomIndex];
+                eliminateWeapon(weaponToEliminate.name);
+                await new Promise(resolve => setTimeout(resolve, 800));
+            }
+
+            if (remainingWeapons.length === 1) {
+                showWinner(remainingWeapons[0]);
+            }
+
+            startButton.disabled = false;
+            startButton.textContent = 'YENİDEN TARA';
+            isAnimating = false;
+        }
+
+        function resetPicker() {
+            remainingWeapons = [...weapons];
+            eliminatedWeapons = [];
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('progressFill').style.width = '0%';
+            
+            // Stats'ları sıfırla
+            document.getElementById('remainingCount').textContent = weapons.length;
+            document.getElementById('eliminatedCount').textContent = 0;
+            
+            // Konfeti temizle
+            document.querySelectorAll('.confetti').forEach(confetti => confetti.remove());
+            
+            // Tüm animasyon sınıflarını temizle ve kartları göster
+            const allCards = document.querySelectorAll('.weapon-card');
+            allCards.forEach(card => {
+                card.classList.remove('eliminated', 'winner', 'targeting', 'scanning', 'instant-win');
+                card.style.display = 'flex';
+            });
+        }
+
+        // Initialize
+        renderWeapons();
+    </script>
+</body>
+</html>
